@@ -12,31 +12,31 @@
 
 class MotorController {
 public:
-	enum Direction {
-		FORWARD = 0,
-		BACKWARD = 1
-	};
+    enum Direction {
+        FORWARD = 0,
+        BACKWARD = 1
+    };
 
-	MotorController();
-	~MotorController();
+    MotorController();
+    ~MotorController();
 
-	int8_t setMotorRight(Direction direction, uint16_t speed);
+    int8_t setMotorRight(Direction direction, uint16_t speed);
 
-	int8_t setMotorLeft(Direction direction, uint16_t speed);
+    int8_t setMotorLeft(Direction direction, uint16_t speed);
 
-	int8_t moveForward(uint16_t speed);
+    int8_t moveForward(uint16_t speed);
 
-	int8_t moveBackward(uint16_t speed);
+    int8_t moveBackward(uint16_t speed);
 
-	int8_t turnRight(uint16_t speed);
+    int8_t turnRight(uint16_t speed);
 
-	int8_t turnLeft(uint16_t speed);
+    int8_t turnLeft(uint16_t speed);
 
 private:
-	static DigitalOut  motorLeftDirection_;
-	static PwmOut      motorLeftSpeed_;
-	static DigitalOut  motorRightDirection_;
-	static PwmOut      motorRightSpeed_;
+    static DigitalOut  motorLeftDirection_;
+    static PwmOut      motorLeftSpeed_;
+    static DigitalOut  motorRightDirection_;
+    static PwmOut      motorRightSpeed_;
 };
 
 #endif /* MOTORCONTROLLER_H_ */

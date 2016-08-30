@@ -13,15 +13,15 @@
 class Buzzer {
 
 public:
-	Buzzer();
-	~Buzzer();
+    Buzzer();
+    ~Buzzer();
 
-	void turnOn();
+    void turnOn();
 
-	void turnOff();
+    void turnOff();
 
 private:
-	static DigitalOut  buzzer_;
+    static DigitalOut  buzzer_;
 };
 
 
