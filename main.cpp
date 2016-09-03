@@ -70,8 +70,8 @@ int main(void) {
 				motorController.moveForward(1000);
 				wait(0.1);
 			} else {
-				motorController.turnRight(500);
-				wait_us(100);
+				motorController.turnRight(800);
+				wait_us(10);
 			}
 		}
 	}
