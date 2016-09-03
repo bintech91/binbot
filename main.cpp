@@ -71,7 +71,7 @@ int main(void) {
 				wait(0.1);
 			} else {
 				motorController.turnRight(500);
-				wait_ms(1);
+				wait_us(100);
 			}
 		}
 	}
