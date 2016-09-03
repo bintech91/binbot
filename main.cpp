@@ -40,41 +40,41 @@ void periodicCallback(void) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////
 int main(void) {
-	wait(0.1);
+    wait(0.1);
 //Init Hardware
 
-	sensors.init();
+    sensors.init();
 
 //Init interupt Timer
-	ticker.attach(periodicCallback, 0.00015);
-	wait(0.5);
+    ticker.attach(periodicCallback, 0.00015);
+    wait(0.5);
 
-	while (true) {
-		//rotator_right(20);
-		uint8_t sen_in = sensors.distanceSensor();
-		if ((sensors.frontLeftSensor() == SensorController::SENSOR_OFF)
-				&& (sensors.frontRightSensor() == SensorController::SENSOR_OFF)) {
-			motorController.moveBackward(1000);
-			wait(1);
-		} else if (sensors.frontLeftSensor() == SensorController::SENSOR_OFF) {
-			motorController.moveBackRight(1000);
-			wait(1);
-		} else if (sensors.frontRightSensor() == SensorController::SENSOR_OFF) {
-			motorController.moveBackLeft(1000);
-			wait(1);
-		} else if (sensors.backSensor() == SensorController::SENSOR_OFF) {
-			motorController.moveForward(1000);
-			wait(1);
-		} else {
-			if ((sen_in > 0) && (sen_in <= 70)) {
-				motorController.moveForward(1000);
-				wait(0.1);
-			} else {
-				motorController.turnRight(800);
-				wait_us(10);
-			}
-		}
-	}
+    while (true) {
+        //rotator_right(20);
+        uint8_t sen_in = sensors.distanceSensor();
+        if ((sensors.frontLeftSensor() == SensorController::SENSOR_OFF)
+                && (sensors.frontRightSensor() == SensorController::SENSOR_OFF)) {
+            motorController.moveBackward(1000);
+            wait(1);
+        } else if (sensors.frontLeftSensor() == SensorController::SENSOR_OFF) {
+            motorController.moveBackRight(1000);
+            wait(1);
+        } else if (sensors.frontRightSensor() == SensorController::SENSOR_OFF) {
+            motorController.moveBackLeft(1000);
+            wait(1);
+        } else if (sensors.backSensor() == SensorController::SENSOR_OFF) {
+            motorController.moveForward(1000);
+            wait_ms(1);
+        } else {
+            if ((sen_in > 0) && (sen_in <= 80)) {
+                motorController.moveForward(1000);
+                wait_ms(200);
+            } else {
+                motorController.turnRight(1000);
+                wait_us(200);
+            }
+        }
+    }
 
 //    while (true) {
 //        //rotator_right(20);
