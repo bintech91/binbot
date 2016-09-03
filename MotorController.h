@@ -13,8 +13,13 @@
 class MotorController {
 public:
     enum Direction {
-        FORWARD = 0,
-        BACKWARD = 1
+        DIRECTION_FORWARD = 0,
+        DIRECTION_BACKWARD = 1
+    };
+
+    enum BoostState {
+    	BOOST_DISABLE = 0,
+		BOOST_ENBALE = 1
     };
 
     MotorController();
@@ -32,11 +37,19 @@ public:
 
     int8_t turnLeft(uint16_t speed);
 
+    int8_t moveBackRight(uint16_t speed);
+
+    int8_t moveBackLeft(uint16_t speed);
+
+    int8_t setBoost(BoostState state);
+
 private:
     static DigitalOut  motorLeftDirection_;
     static PwmOut      motorLeftSpeed_;
     static DigitalOut  motorRightDirection_;
     static PwmOut      motorRightSpeed_;
+
+    static DigitalOut motorBoostSpeed_;
 };
 
 #endif /* MOTORCONTROLLER_H_ */
