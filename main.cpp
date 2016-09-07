@@ -39,91 +39,116 @@ void periodicCallback(void) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+enum BotState {
+
+} BotState;
+
 int main(void) {
-    wait(0.1);
 //Init Hardware
+	sensors.init();
 
-    sensors.init();
+	wait(0.1);
 
-//Init interupt Timer
-    ticker.attach(periodicCallback, 0.00015);
-    wait(0.5);
+	uint8_t distanceRight;
+	uint8_t distanceLeft;
+	uint8_t distanceFront;
 
-    while (true) {
-        //rotator_right(20);
-        uint8_t sen_in = sensors.distanceSensor();
-        if ((sensors.frontLeftSensor() == SensorController::SENSOR_OFF)
-                && (sensors.frontRightSensor() == SensorController::SENSOR_OFF)) {
-            motorController.moveBackward(1000);
-            wait(1);
-        } else if (sensors.frontLeftSensor() == SensorController::SENSOR_OFF) {
-            motorController.moveBackRight(1000);
-            wait(1);
-        } else if (sensors.frontRightSensor() == SensorController::SENSOR_OFF) {
-            motorController.moveBackLeft(1000);
-            wait(1);
-        } else if (sensors.backSensor() == SensorController::SENSOR_OFF) {
-            motorController.moveForward(1000);
-            wait_ms(1);
-        } else {
-            if ((sen_in > 0) && (sen_in <= 80)) {
-                motorController.moveForward(1000);
-                wait_ms(200);
-            } else {
-                motorController.turnRight(1000);
-                wait_us(200);
-            }
-        }
-    }
+	uint8_t frontRight;
+	uint8_t frontLeft;
+	uint8_t back;
 
-//    while (true) {
-//        //rotator_right(20);
-//        uint8_t sen_in = sensors.distanceSensor();
-//        if ((sen_in > 0) && (sen_in < 30)) {
-//            if ((sensors.frontLeftSensor() == SensorController::SENSOR_OFF) && (sensors.frontRightSensor() == SensorController::SENSOR_OFF)) {
-//                motorController.moveBackward(1000);
-//                wait(2);
-//            } else {
-//                motorController.moveForward(1000);
-//            }
-//
-//        } else {
-//            if ((sensors.frontLeftSensor() == SensorController::SENSOR_OFF) && (sensors.frontRightSensor() == SensorController::SENSOR_OFF)) {
-//                motorController.moveBackward(1000);
-//                wait(2);
-//            } else {
-//                motorController.turnRight(1000);
-//            }
-//        }
-//    }
+	uint16_t speed = 1000;
+	uint8_t minDistance = 0;
+	uint8_t maxDistance = 30;
+
+	BotState state;
+
+	while (true) {
+		distanceRight = sensors.distanceSensorRight();
+		distanceLeft = sensors.distanceSensorLeft();
+		distanceFront = sensors.distanceSensorFront();
+
+		frontRight = sensors.frontRightSensor();
+		frontLeft = sensors.frontLeftSensor();
+		back = sensors.backSensor();
+
+		if ((frontRight == SensorController::SENSOR_OFF)
+				&& (frontLeft == SensorController::SENSOR_OFF)) {
+			if ((distanceFront > minDistance)
+					&& (distanceFront < maxDistance)) {
+				motorController.moveBackward(speed);
+			} else if ((distanceRight > minDistance)
+					&& (distanceRight < maxDistance)) {
+				motorController.moveBackLeft(speed);
+			} else if ((distanceLeft > minDistance)
+					&& (distanceLeft < maxDistance)) {
+				motorController.moveBackRight(speed);
+			} else {
+				motorController.moveBackward(speed);
+			}
+
+		} else if ((frontRight == SensorController::SENSOR_OFF)
+				&& (back == SensorController::SENSOR_OFF)) {
+			motorController.moveFrontLeft(speed);
+		} else if ((frontLeft == SensorController::SENSOR_OFF)
+				&& (back == SensorController::SENSOR_OFF)) {
+			motorController.moveFrontRight(speed);
+		} else if ((frontRight == SensorController::SENSOR_OFF)) {
+			if ((distanceFront > minDistance)
+					&& (distanceFront < maxDistance)) {
+				motorController.moveBackLeft(speed);
+			} else if ((distanceRight > minDistance)
+					&& (distanceRight < maxDistance)) {
+				motorController.moveBackward(speed);
+			} else if ((distanceLeft > minDistance)
+					&& (distanceLeft < maxDistance)) {
+				motorController.moveBackward(speed);
+			} else {
+				motorController.moveBackLeft(speed);
+			}
+
+		} else if ((frontLeft == SensorController::SENSOR_OFF)) {
+			if ((distanceFront > minDistance)
+					&& (distanceFront < maxDistance)) {
+				motorController.moveBackRight(speed);
+			} else if ((distanceRight > minDistance)
+					&& (distanceRight < maxDistance)) {
+				motorController.moveBackward(speed);
+			} else if ((distanceLeft > minDistance)
+					&& (distanceLeft < maxDistance)) {
+				motorController.moveBackward(speed);
+			} else {
+				motorController.moveBackRight(speed);
+			}
+		} else if ((back == SensorController::SENSOR_OFF)) {
+			motorController.moveForward(speed);
+		} else {
+			if ((distanceFront > minDistance)
+					&& (distanceFront < maxDistance)) {
+				motorController.moveForward(speed);
+				wait_ms(50);
+			} else if ((distanceRight > minDistance)
+					&& (distanceRight < maxDistance)) {
+				motorController.turnRight(speed);
+				distanceFront = sensors.distanceSensorFront();
+				if ((distanceFront > minDistance)
+						&& (distanceFront < maxDistance)) {
+					motorController.moveForward(speed);
+					wait_ms(50);
+				}
+			} else if ((distanceLeft > minDistance)
+					&& (distanceLeft < maxDistance)) {
+				motorController.turnLeft(speed);
+				distanceFront = sensors.distanceSensorFront();
+				if ((distanceFront > minDistance)
+						&& (distanceFront < maxDistance)) {
+					motorController.moveForward(speed);
+					wait_ms(50);
+				}
+			} else {
+				motorController.moveForward(speed);
+			}
+		}
+	}
 }
-
-/*
- int main(void)
- {
- wait(0.1);
- //Init Hardware
- SEN_UP_L.mode(PullUp);
- SEN_UP_R.mode(PullUp);
- SEN_DOWN.mode(PullUp);
- SEN_IR.mode(PullUp);
-
- //Init interupt Timer
- ticker.attach(periodicCallback, 0.00015);
- wait(0.5);
- while (true) {
- //rotator_right(20);
- uint8_t sen_in = distanceSensor();
- if( (sen_in > 0) && (sen_in < 50) )
- {
- move_up(100, 100);
- while( (frontLeftSensor() == OFF) && (frontRightSensor() == OFF) ){
- move_down(40,40);
- }
- } else {
- rotator_right(100);
- }
- }
- }
- */
-
