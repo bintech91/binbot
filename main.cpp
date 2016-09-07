@@ -77,8 +77,11 @@ int main(void) {
 		frontRight = sensors.frontRightSensor();
 		frontLeft = sensors.frontLeftSensor();
 		back = sensors.backSensor();
-
-		if ((frontRight == SensorController::SENSOR_OFF)
+		if ((frontRight == SensorController::SENSOR_ON)
+				&& (frontLeft == SensorController::SENSOR_ON)
+				&& (back == SensorController::SENSOR_ON)) {
+			goto CHECK_ENEMY;
+		} else if ((frontRight == SensorController::SENSOR_OFF)
 				&& (frontLeft == SensorController::SENSOR_OFF)) {
 			if ((distanceFront > minDistance)
 					&& (distanceFront < maxDistance)) {
@@ -115,61 +118,63 @@ int main(void) {
 			motorController.moveForward(speed);
 			state = BOT_FORWARD;
 		} else {
-			if ((distanceFront > minDistance)
-					&& (distanceFront < maxDistance)) {
-				motorController.moveForward(speed);
-				wait_ms(50);
-			} else if ((distanceRight > minDistance)
-					&& (distanceRight < maxDistance)) {
-				motorController.turnRight(speed);
-				distanceFront = sensors.distanceSensorFront();
+			CHECK_ENEMY: {
 				if ((distanceFront > minDistance)
 						&& (distanceFront < maxDistance)) {
 					motorController.moveForward(speed);
 					wait_ms(50);
-				}
-			} else if ((distanceLeft > minDistance)
-					&& (distanceLeft < maxDistance)) {
-				motorController.turnLeft(speed);
-				distanceFront = sensors.distanceSensorFront();
-				if ((distanceFront > minDistance)
-						&& (distanceFront < maxDistance)) {
-					motorController.moveForward(speed);
-					wait_ms(50);
-				}
-			} else {
-				switch (state) {
-				case BOT_FORWARD:
-					motorController.moveForward(speed);
-					break;
-				case BOT_BACKWARD:
-					motorController.moveBackward(speed);
-					wait(0.45);
-					state = BOT_RIGHT;
-					break;
-				case BOT_BACKWARD_RIGHT:
-					motorController.moveBackward(speed);
-					wait(0.45);
-					state = BOT_RIGHT;
-					break;
-				case BOT_BACKWARD_LEFT:
-					motorController.moveBackward(speed);
-					wait(0.45);
-					state = BOT_LEFT;
-					break;
-				case BOT_RIGHT:
+				} else if ((distanceRight > minDistance)
+						&& (distanceRight < maxDistance)) {
 					motorController.turnRight(speed);
-					wait(0.6);
-					state = BOT_FORWARD;
-					break;
-				case BOT_LEFT:
+					distanceFront = sensors.distanceSensorFront();
+					if ((distanceFront > minDistance)
+							&& (distanceFront < maxDistance)) {
+						motorController.moveForward(speed);
+						wait_ms(50);
+					}
+				} else if ((distanceLeft > minDistance)
+						&& (distanceLeft < maxDistance)) {
 					motorController.turnLeft(speed);
-					wait(0.6);
-					state = BOT_FORWARD;
-					break;
-				default:
-					motorController.moveForward(speed);
-					break;
+					distanceFront = sensors.distanceSensorFront();
+					if ((distanceFront > minDistance)
+							&& (distanceFront < maxDistance)) {
+						motorController.moveForward(speed);
+						wait_ms(50);
+					}
+				} else {
+					switch (state) {
+					case BOT_FORWARD:
+						motorController.moveForward(speed);
+						break;
+					case BOT_BACKWARD:
+						motorController.moveBackward(speed);
+						wait(0.45);
+						state = BOT_RIGHT;
+						break;
+					case BOT_BACKWARD_RIGHT:
+						motorController.moveBackward(speed);
+						wait(0.45);
+						state = BOT_RIGHT;
+						break;
+					case BOT_BACKWARD_LEFT:
+						motorController.moveBackward(speed);
+						wait(0.45);
+						state = BOT_LEFT;
+						break;
+					case BOT_RIGHT:
+						motorController.turnRight(speed);
+						wait(0.6);
+						state = BOT_FORWARD;
+						break;
+					case BOT_LEFT:
+						motorController.turnLeft(speed);
+						wait(0.6);
+						state = BOT_FORWARD;
+						break;
+					default:
+						motorController.moveForward(speed);
+						break;
+					}
 				}
 			}
 		}
